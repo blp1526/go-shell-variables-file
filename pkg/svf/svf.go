@@ -34,7 +34,19 @@ func ReadFile(path string) (*ShellVariablesFile, error) {
 		return nil, err
 	}
 
-	lines := strings.Split(string(b), "\n")
+	content := string(b)
+
+	err = s.SetItems(content)
+	if err != nil {
+		return nil, err
+	}
+
+	return s, nil
+}
+
+// SetItems sets items.
+func (s *ShellVariablesFile) SetItems(content string) error {
+	lines := strings.Split(content, "\n")
 
 	for _, line := range lines {
 		line = strings.TrimSpace(line)
@@ -48,7 +60,7 @@ func ReadFile(path string) (*ShellVariablesFile, error) {
 		}
 
 		if !strings.Contains(line, "=") {
-			return nil, fmt.Errorf("line: '%s' has no '=' separator", line)
+			return fmt.Errorf("line: '%s' has no '=' separator", line)
 		}
 
 		kv := strings.SplitN(line, "=", 2)
@@ -58,10 +70,10 @@ func ReadFile(path string) (*ShellVariablesFile, error) {
 		s.items[key] = value
 	}
 
-	return s, nil
+	return nil
 }
 
-// GetRawValue gets value by key.
+// GetRawValue gets a value by a key.
 func (s *ShellVariablesFile) GetRawValue(key string) (string, error) {
 	value, ok := s.items[key]
 	if !ok {
@@ -71,7 +83,7 @@ func (s *ShellVariablesFile) GetRawValue(key string) (string, error) {
 	return value, nil
 }
 
-// GetValue gets quote trimmed value by key.
+// GetValue gets a quote trimmed value by a key.
 func (s *ShellVariablesFile) GetValue(key string) (string, error) {
 	value, err := s.GetRawValue(key)
 	if err != nil {
@@ -95,18 +107,6 @@ func (s *ShellVariablesFile) GetValue(key string) (string, error) {
 	return value, nil
 }
 
-// Keys returns items keys.
-func (s *ShellVariablesFile) Keys() []string {
-	keys := []string{}
-
-	for key := range s.items {
-		keys = append(keys, key)
-	}
-
-	sort.Strings(keys)
-	return keys
-}
-
 // IsValidKeys validates all given keys.
 func (s *ShellVariablesFile) IsValidKeys(keys []string) error {
 	errors := []string{}
@@ -123,4 +123,16 @@ func (s *ShellVariablesFile) IsValidKeys(keys []string) error {
 	}
 
 	return nil
+}
+
+// Keys returns items keys.
+func (s *ShellVariablesFile) Keys() []string {
+	keys := []string{}
+
+	for key := range s.items {
+		keys = append(keys, key)
+	}
+
+	sort.Strings(keys)
+	return keys
 }
