@@ -60,19 +60,19 @@ func ReadFile(path string) (*ShellVariablesFile, error) {
 	return s, nil
 }
 
-// GetRaw gets value by name.
-func (s *ShellVariablesFile) GetRaw(name string) (string, error) {
-	value, ok := s.items[name]
+// RawValue gets value by key.
+func (s *ShellVariablesFile) RawValue(key string) (string, error) {
+	value, ok := s.items[key]
 	if !ok {
-		return "", fmt.Errorf("name: '%s' is not present", name)
+		return "", fmt.Errorf("key: '%s' is not present", key)
 	}
 
 	return value, nil
 }
 
-// Get gets quote trimmed value by name.
-func (s *ShellVariablesFile) Get(name string) (string, error) {
-	value, err := s.GetRaw(name)
+// Value gets quote trimmed value by key.
+func (s *ShellVariablesFile) Value(key string) (string, error) {
+	value, err := s.RawValue(key)
 	if err != nil {
 		return "", err
 	}
@@ -95,7 +95,7 @@ func (s *ShellVariablesFile) Get(name string) (string, error) {
 }
 
 // Keys returns items keys.
-func (s ShellVariablesFile) Keys() []string {
+func (s *ShellVariablesFile) Keys() []string {
 	keys := []string{}
 
 	for key := range s.items {
@@ -103,4 +103,22 @@ func (s ShellVariablesFile) Keys() []string {
 	}
 
 	return keys
+}
+
+// IsValidKeys validates all given keys.
+func (s *ShellVariablesFile) IsValidKeys(keys []string) error {
+	errors := []string{}
+
+	for _, key := range keys {
+		_, invalid := s.RawValue(key)
+		if invalid != nil {
+			errors = append(errors, invalid.Error())
+		}
+	}
+
+	if len(errors) != 0 {
+		return fmt.Errorf("%s", strings.Join(errors, ", "))
+	}
+
+	return nil
 }
