@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/blp1526/go-shell-variables-file.svg?branch=travis)](https://travis-ci.org/blp1526/go-shell-variables-file)
+
 # go-shell-variables-file
 
 ## Usage

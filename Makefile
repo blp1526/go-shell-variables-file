@@ -13,6 +13,7 @@ clean:
 
 .PHONY: dep
 dep:
+	go get github.com/golang/dep/cmd/dep
 	dep ensure
 	@echo
 
