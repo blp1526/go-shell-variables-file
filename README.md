@@ -1,1 +1,42 @@
 # go-shell-variables-file
+
+## Usage
+
+### As A Package
+
+```go
+package main
+
+import (
+	"fmt"
+
+	"github.com/blp1526/go-shell-variables-file/pkg/svf"
+)
+
+func main() {
+	path := "/etc/os-release"
+	s, _ := svf.ReadFile(path)
+	key := "VERSION"
+	value, _ := s.GetValue(key)
+	fmt.Printf("path: %s, key: %s, value %s\n", path, key, value)
+}
+```
+
+then, `go run main.go`
+
+```
+path: /etc/os-release, key: VERSION, value 18.04.1 LTS (Bionic Beaver)
+```
+
+### As A CLI
+
+```
+$ svf values /etc/os-release --key VERSION
+18.04.1 LTS (Bionic Beaver)
+```
+
+## Build CLI
+
+```
+$ make
+```
