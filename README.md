@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/blp1526/go-shell-variables-file.svg?branch=travis)](https://travis-ci.org/blp1526/go-shell-variables-file)
+[![Go Report Card](https://goreportcard.com/badge/github.com/blp1526/go-shell-variables-file)](https://goreportcard.com/report/github.com/blp1526/go-shell-variables-file)
 
 # go-shell-variables-file
 
