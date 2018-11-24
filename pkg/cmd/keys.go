@@ -36,7 +36,7 @@ var keysCommand = cli.Command{
 		}
 
 		for _, key := range keys {
-			value, _ := s.Value(key)
+			value, _ := s.GetValue(key)
 			fmt.Println(value)
 		}
 
