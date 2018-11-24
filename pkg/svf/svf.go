@@ -3,6 +3,7 @@ package svf
 import (
 	"fmt"
 	"io/ioutil"
+	"sort"
 	"strings"
 )
 
@@ -60,8 +61,8 @@ func ReadFile(path string) (*ShellVariablesFile, error) {
 	return s, nil
 }
 
-// RawValue gets value by key.
-func (s *ShellVariablesFile) RawValue(key string) (string, error) {
+// GetRawValue gets value by key.
+func (s *ShellVariablesFile) GetRawValue(key string) (string, error) {
 	value, ok := s.items[key]
 	if !ok {
 		return "", fmt.Errorf("key: '%s' is not present", key)
@@ -70,9 +71,9 @@ func (s *ShellVariablesFile) RawValue(key string) (string, error) {
 	return value, nil
 }
 
-// Value gets quote trimmed value by key.
-func (s *ShellVariablesFile) Value(key string) (string, error) {
-	value, err := s.RawValue(key)
+// GetValue gets quote trimmed value by key.
+func (s *ShellVariablesFile) GetValue(key string) (string, error) {
+	value, err := s.GetRawValue(key)
 	if err != nil {
 		return "", err
 	}
@@ -102,6 +103,7 @@ func (s *ShellVariablesFile) Keys() []string {
 		keys = append(keys, key)
 	}
 
+	sort.Strings(keys)
 	return keys
 }
 
@@ -110,7 +112,7 @@ func (s *ShellVariablesFile) IsValidKeys(keys []string) error {
 	errors := []string{}
 
 	for _, key := range keys {
-		_, invalid := s.RawValue(key)
+		_, invalid := s.GetRawValue(key)
 		if invalid != nil {
 			errors = append(errors, invalid.Error())
 		}
