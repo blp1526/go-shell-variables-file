@@ -1,6 +1,9 @@
 package svf
 
 import (
+	"io/ioutil"
+	"os"
+	"path/filepath"
 	"reflect"
 	"testing"
 )
@@ -21,6 +24,64 @@ func TestNew(t *testing.T) {
 
 		if !reflect.DeepEqual(got, tt.want) {
 			t.Errorf("tt.path: %v, tt.want: %v, got: %v", tt.path, tt.want, got)
+		}
+	}
+}
+
+func TestReadFile(t *testing.T) {
+	tempDir, _ := ioutil.TempDir("", "")
+	defer os.RemoveAll(tempDir)
+	path := filepath.Join(tempDir, "test")
+
+	tests := []struct {
+		isFilePresent bool
+		content       []byte
+		want          *ShellVariablesFile
+		err           bool
+	}{
+		{
+			isFilePresent: false,
+			content:       []byte(""),
+			want:          nil,
+			err:           true,
+		},
+		{
+			isFilePresent: true,
+			content:       []byte("FOO"),
+			want:          nil,
+			err:           true,
+		},
+		{
+			isFilePresent: true,
+			content:       []byte("FOO=BAR"),
+			want: &ShellVariablesFile{
+				path:  path,
+				items: map[string]string{"FOO": "BAR"},
+			},
+			err: false,
+		},
+	}
+
+	for _, tt := range tests {
+		if tt.isFilePresent {
+			ioutil.WriteFile(path, tt.content, 0644)
+		}
+
+		got, err := ReadFile(path)
+
+		if tt.err && err == nil {
+			t.Errorf("tt.isFilePresent: %v, tt.content: %s, tt.want: %v, tt.err: %v, got: %v, err: %v",
+				tt.isFilePresent, tt.content, tt.want, tt.err, got, err)
+		}
+
+		if tt.err && err == nil {
+			t.Errorf("tt.isFilePresent: %v, tt.content: %s, tt.want: %v, tt.err: %v, got: %v, err: %v",
+				tt.isFilePresent, tt.content, tt.want, tt.err, got, err)
+		}
+
+		if !reflect.DeepEqual(got, tt.want) {
+			t.Errorf("tt.isFilePresent: %v, tt.content: %s, tt.want: %v, tt.err: %v, got: %v, err: %v",
+				tt.isFilePresent, tt.content, tt.want, tt.err, got, err)
 		}
 	}
 }
@@ -60,7 +121,7 @@ func TestSetItems(t *testing.T) {
 
 	for _, tt := range tests {
 		s := &ShellVariablesFile{}
-		err := s.SetItems(tt.content)
+		err := s.setItems(tt.content)
 
 		if tt.err && err == nil {
 			t.Errorf("tt.content: %v, tt.want: %v, s.items: %v, tt.err: %v, err: %v", tt.content, tt.want, s.items, tt.err, err)
