@@ -27,16 +27,12 @@ func New(path string) *ShellVariablesFile {
 // ReadFile initialize *ShellVariablesFile by path and set items.
 func ReadFile(path string) (*ShellVariablesFile, error) {
 	s := New(path)
-	s.items = map[string]string{}
-
 	b, err := ioutil.ReadFile(path)
 	if err != nil {
 		return nil, err
 	}
 
-	content := string(b)
-
-	err = s.SetItems(content)
+	err = s.SetItems(string(b))
 	if err != nil {
 		return nil, err
 	}
@@ -46,6 +42,8 @@ func ReadFile(path string) (*ShellVariablesFile, error) {
 
 // SetItems sets items.
 func (s *ShellVariablesFile) SetItems(content string) error {
+	s.items = map[string]string{}
+
 	lines := strings.Split(content, "\n")
 
 	for _, line := range lines {
