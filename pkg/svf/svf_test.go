@@ -25,6 +25,57 @@ func TestNew(t *testing.T) {
 	}
 }
 
+func TestSetItems(t *testing.T) {
+	tests := []struct {
+		content string
+		want    map[string]string
+		err     bool
+	}{
+		{
+			content: ``,
+			want:    map[string]string{},
+			err:     false,
+		},
+		{
+			content: `#`,
+			want:    map[string]string{},
+			err:     false,
+		},
+		{
+			content: ` #`,
+			want:    map[string]string{},
+			err:     false,
+		},
+		{
+			content: `FOO`,
+			want:    map[string]string{},
+			err:     true,
+		},
+		{
+			content: `FOO=BAR`,
+			want:    map[string]string{"FOO": "BAR"},
+			err:     false,
+		},
+	}
+
+	for _, tt := range tests {
+		s := &ShellVariablesFile{}
+		err := s.SetItems(tt.content)
+
+		if tt.err && err == nil {
+			t.Errorf("tt.content: %v, tt.want: %v, s.items: %v, tt.err: %v, err: %v", tt.content, tt.want, s.items, tt.err, err)
+		}
+
+		if !tt.err && err != nil {
+			t.Errorf("tt.content: %v, tt.want: %v, s.items: %v, tt.err: %v, err: %v", tt.content, tt.want, s.items, tt.err, err)
+		}
+
+		if !reflect.DeepEqual(s.items, tt.want) {
+			t.Errorf("tt.content: %v, tt.want: %v, s.items: %v, tt.err: %v, err: %v", tt.content, tt.want, s.items, tt.err, err)
+		}
+	}
+}
+
 func TestGetRawValue(t *testing.T) {
 	tests := []struct {
 		items map[string]string
@@ -111,6 +162,61 @@ func TestGetValue(t *testing.T) {
 
 		if got != tt.want {
 			t.Errorf("items: %v, key: %v, tt.want: %v, tt.err: %v, got: %v, err: %v", tt.items, tt.key, tt.want, tt.err, got, err)
+		}
+	}
+}
+
+func TestIsValidKeys(t *testing.T) {
+	tests := []struct {
+		items map[string]string
+		keys  []string
+		err   bool
+	}{
+		{
+			items: map[string]string{"1": "A", "2": "B"},
+			keys:  []string{"1"},
+			err:   false,
+		},
+		{
+			items: map[string]string{"1": "A", "2": "B"},
+			keys:  []string{"3"},
+			err:   true,
+		},
+	}
+
+	for _, tt := range tests {
+		s := &ShellVariablesFile{}
+		s.items = tt.items
+		err := s.IsValidKeys(tt.keys)
+
+		if tt.err && err == nil {
+			t.Errorf("tt.items: %v, tt.keys: %v, tt.err: %v, err: %v", tt.items, tt.keys, tt.err, err)
+		}
+
+		if !tt.err && err != nil {
+			t.Errorf("tt.items: %v, tt.keys: %v, tt.err: %v, err: %v", tt.items, tt.keys, tt.err, err)
+		}
+	}
+}
+
+func TestKeys(t *testing.T) {
+	tests := []struct {
+		items map[string]string
+		want  []string
+	}{
+		{
+			items: map[string]string{"2": "B", "1": "A"},
+			want:  []string{"1", "2"},
+		},
+	}
+
+	for _, tt := range tests {
+		s := &ShellVariablesFile{}
+		s.items = tt.items
+		got := s.Keys()
+
+		if !reflect.DeepEqual(got, tt.want) {
+			t.Errorf("tt.items: %v, tt.want: %v, got: %v", tt.items, tt.want, got)
 		}
 	}
 }
