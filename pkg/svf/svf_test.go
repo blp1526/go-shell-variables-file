@@ -93,27 +93,32 @@ func TestSetItems(t *testing.T) {
 		err     bool
 	}{
 		{
-			content: ``,
+			content: "",
 			want:    map[string]string{},
 			err:     false,
 		},
 		{
-			content: `#`,
+			content: "#",
 			want:    map[string]string{},
 			err:     false,
 		},
 		{
-			content: ` #`,
+			content: " #",
 			want:    map[string]string{},
 			err:     false,
 		},
 		{
-			content: `FOO`,
+			content: "FOO",
 			want:    map[string]string{},
 			err:     true,
 		},
 		{
-			content: `FOO=BAR`,
+			content: "FOO=BAR\nFOO=BAR",
+			want:    map[string]string{"FOO": "BAR"},
+			err:     true,
+		},
+		{
+			content: "FOO=BAR",
 			want:    map[string]string{"FOO": "BAR"},
 			err:     false,
 		},

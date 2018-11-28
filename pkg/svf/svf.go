@@ -58,12 +58,17 @@ func (s *ShellVariablesFile) setItems(content string) error {
 		}
 
 		if !strings.Contains(line, "=") {
-			return fmt.Errorf("line: '%s' has no '=' separator", line)
+			return fmt.Errorf("line: \"%s\" has no \"=\" separator", line)
 		}
 
 		kv := strings.SplitN(line, "=", 2)
 		key := kv[0]
 		value := kv[1]
+
+		_, hasKey := s.items[key]
+		if hasKey {
+			return fmt.Errorf("key: \"%s\" is duplicated", key)
+		}
 
 		s.items[key] = value
 	}
