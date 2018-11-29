@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"sort"
 
 	"github.com/blp1526/go-shell-variables-file/pkg/svf"
 	"github.com/urfave/cli"
@@ -31,18 +30,11 @@ var valuesCommand = cli.Command{
 			keys = []string{key}
 		}
 
-		err = s.IsValidKeys(keys)
+		values, err := s.Values(keys)
 		if err != nil {
 			return cli.NewExitError(err, exitCodeNG)
 		}
 
-		values := []string{}
-		for _, key := range keys {
-			value, _ := s.GetValue(key)
-			values = append(values, value)
-		}
-
-		sort.Strings(values)
 		for _, value := range values {
 			fmt.Println(value)
 		}

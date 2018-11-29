@@ -128,7 +128,7 @@ func (s *ShellVariablesFile) IsValidKeys(keys []string) error {
 	return nil
 }
 
-// Keys returns items keys.
+// Keys returns items' keys.
 func (s *ShellVariablesFile) Keys() []string {
 	keys := []string{}
 
@@ -138,4 +138,22 @@ func (s *ShellVariablesFile) Keys() []string {
 
 	sort.Strings(keys)
 	return keys
+}
+
+// Values returns items' values.
+func (s *ShellVariablesFile) Values(keys []string) (values []string, err error) {
+	values = []string{}
+
+	err = s.IsValidKeys(keys)
+	if err != nil {
+		return values, err
+	}
+
+	for _, key := range keys {
+		value, _ := s.GetValue(key)
+		values = append(values, value)
+	}
+
+	sort.Strings(values)
+	return values, nil
 }

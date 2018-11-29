@@ -286,3 +286,40 @@ func TestKeys(t *testing.T) {
 		}
 	}
 }
+
+func TestValues(t *testing.T) {
+	tests := []struct {
+		keys []string
+		want []string
+		err  bool
+	}{
+		{
+			keys: []string{"4", "1"},
+			want: []string{},
+			err:  true,
+		},
+		{
+			keys: []string{"3", "1"},
+			want: []string{"A", "C"},
+			err:  false,
+		},
+	}
+
+	for _, tt := range tests {
+		s := &ShellVariablesFile{}
+		s.items = map[string]string{"3": "C", "2": "B", "1": "A"}
+		got, err := s.Values(tt.keys)
+
+		if tt.err && err == nil {
+			t.Errorf("tt.keys: %v, tt.want: %v, got: %v, tt.err: %v, err: %v", tt.keys, tt.want, got, tt.err, err)
+		}
+
+		if !tt.err && err != nil {
+			t.Errorf("tt.keys: %v, tt.want: %v, got: %v, tt.err: %v, err: %v", tt.keys, tt.want, got, tt.err, err)
+		}
+
+		if !reflect.DeepEqual(got, tt.want) {
+			t.Errorf("tt.keys: %v, tt.want: %v, got: %v, tt.err: %v, err: %v", tt.keys, tt.want, got, tt.err, err)
+		}
+	}
+}
