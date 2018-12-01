@@ -27,7 +27,7 @@ gometalinter:
 
 .PHONY: test
 test: gometalinter
-	go test -v --cover ./...
+	go test ./... -v --cover -race -covermode=atomic -coverprofile=coverage.txt
 	@echo
 
 .PHONY: build

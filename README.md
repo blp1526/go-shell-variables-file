@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/blp1526/go-shell-variables-file.svg?branch=travis)](https://travis-ci.org/blp1526/go-shell-variables-file)
+[![codecov](https://codecov.io/gh/blp1526/go-shell-variables-file/branch/master/graph/badge.svg)](https://codecov.io/gh/blp1526/go-shell-variables-file)
 [![Go Report Card](https://goreportcard.com/badge/github.com/blp1526/go-shell-variables-file)](https://goreportcard.com/report/github.com/blp1526/go-shell-variables-file)
 [![GoDoc](https://godoc.org/github.com/blp1526/go-shell-variables-file?status.svg)](https://godoc.org/github.com/blp1526/go-shell-variables-file)
 
