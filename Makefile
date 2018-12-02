@@ -1,6 +1,10 @@
 NAME = "svf"
-REVISION = $(shell git describe --always --dirty --tags)
-LDFLAGS = -ldflags "-X github.com/blp1526/go-shell-variables-file/pkg/cmd.revision=$(REVISION)"
+VERSION = $(shell git describe --tags)
+REVISION = $(shell git rev-parse --short HEAD)
+LDFLAGS = -ldflags "\
+	-X github.com/blp1526/go-shell-variables-file/pkg/cmd.version=$(VERSION) \
+	-X github.com/blp1526/go-shell-variables-file/pkg/cmd.revision=$(REVISION) \
+	"
 
 .PHONY: all
 all: build
