@@ -8,7 +8,7 @@ import (
 
 const exitCodeNG = 1
 
-var version = "unknown"
+var version string
 var revision string
 
 // NewApp initializes *cli.App
